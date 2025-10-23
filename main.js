@@ -60,6 +60,11 @@ function createWindow() {
   });
 
   win.loadFile('index.html');
+
+  // Send version to renderer process after page loads
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.send('app-version', app.getVersion());
+  });
 }
 
 app.whenReady().then(() => {

@@ -30,9 +30,10 @@
   <h1>Hello World</h1>
   <p id="version">Loading...</p>
   <script>
-    const { app } = require('electron');
-    const version = app.getVersion();
-    document.getElementById('version').textContent = version;
+    const { ipcRenderer } = require('electron');
+    ipcRenderer.on('app-version', (event, version) => {
+      document.getElementById('version').textContent = version;
+    });
   </script>
 </body>
 </html>
