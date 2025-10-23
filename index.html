@@ -28,6 +28,11 @@
 </head>
 <body>
   <h1>Hello World</h1>
-  <p>1.0.0</p>
+  <p id="version">Loading...</p>
+  <script>
+    const { app } = require('electron').remote || require('@electron/remote');
+    const version = require('./package.json').version;
+    document.getElementById('version').textContent = version;
+  </script>
 </body>
 </html>
