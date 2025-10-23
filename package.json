@@ -4,12 +4,19 @@
   "description": "Simple Electron Hello World",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "publish": "electron-builder --win --publish always"
   },
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Owen012345/electron-verkada-app.git"
+  },
   "devDependencies": {
-    "electron": "^28.0.0"
+    "electron": "^28.0.0",
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
     "electron-updater": "^6.6.2"
@@ -17,9 +24,34 @@
   "build": {
     "appId": "com.varcada.electron-app",
     "productName": "Varcada Electron App",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
     "publish": {
-      "provider": "generic",
-      "url": ""
+      "provider": "github",
+      "owner": "Owen012345",
+      "repo": "electron-verkada-app"
     }
   }
 }

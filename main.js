@@ -2,11 +2,8 @@ const { app, BrowserWindow } = require('electron');
 const { autoUpdater } = require('electron-updater');
 
 // Auto-updater configuration
-// TODO: Set actual update server URL
-autoUpdater.setFeedURL({
-  provider: 'generic',
-  url: '' // Update server URL will be configured later
-});
+// Using GitHub Releases as update server
+// electron-updater automatically reads from package.json repository field
 
 // Auto-update event handlers
 autoUpdater.on('checking-for-update', () => {
