@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 
 // Auto-updater configuration
@@ -28,8 +28,25 @@ autoUpdater.on('download-progress', (progressObj) => {
 
 autoUpdater.on('update-downloaded', (info) => {
   console.log('Update downloaded:', info);
-  // Auto-install and restart the app
-  autoUpdater.quitAndInstall();
+
+  // Ask user if they want to install update
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['예', '아니오'],
+    title: '업데이트 설치',
+    message: '새 버전이 다운로드되었습니다.',
+    detail: `버전 ${info.version}이(가) 다운로드되었습니다.\n지금 업데이트를 설치하고 앱을 재시작하시겠습니까?`
+  };
+
+  dialog.showMessageBox(dialogOpts).then((returnValue) => {
+    if (returnValue.response === 0) {
+      // User clicked '예' - install and restart
+      autoUpdater.quitAndInstall();
+    } else {
+      // User clicked '아니오' - do nothing, continue using current version
+      console.log('Update installation postponed by user');
+    }
+  });
 });
 
 function createWindow() {
