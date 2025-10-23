@@ -10,5 +10,16 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^28.0.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  },
+  "build": {
+    "appId": "com.varcada.electron-app",
+    "productName": "Varcada Electron App",
+    "publish": {
+      "provider": "generic",
+      "url": ""
+    }
   }
 }

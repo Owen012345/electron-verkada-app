@@ -1,5 +1,39 @@
 const { app, BrowserWindow } = require('electron');
-const path = require('path');
+const { autoUpdater } = require('electron-updater');
+
+// Auto-updater configuration
+// TODO: Set actual update server URL
+autoUpdater.setFeedURL({
+  provider: 'generic',
+  url: '' // Update server URL will be configured later
+});
+
+// Auto-update event handlers
+autoUpdater.on('checking-for-update', () => {
+  console.log('Checking for updates...');
+});
+
+autoUpdater.on('update-available', (info) => {
+  console.log('Update available:', info);
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  console.log('Update not available:', info);
+});
+
+autoUpdater.on('error', (err) => {
+  console.log('Error in auto-updater:', err);
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  console.log(`Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}%`);
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  console.log('Update downloaded:', info);
+  // Auto-install and restart the app
+  autoUpdater.quitAndInstall();
+});
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -16,6 +50,12 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+
+  // Check for updates when app is ready
+  // Note: Update check will fail until feed URL is configured
+  if (process.env.NODE_ENV !== 'development') {
+    autoUpdater.checkForUpdatesAndNotify();
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
