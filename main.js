@@ -1,25 +1,30 @@
 const { app, BrowserWindow, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 
+console.log('=== MAIN.JS LOADED ===');
+console.log('autoUpdater imported:', !!autoUpdater);
+
 // Auto-updater configuration
 // Using GitHub Releases as update server
 // electron-updater automatically reads from package.json repository field
 
+console.log('Setting up autoUpdater event listeners...');
+
 // Auto-update event handlers
 autoUpdater.on('checking-for-update', () => {
-  console.log('Checking for updates...');
+  console.log('[autoUpdater] Checking for updates...');
 });
 
 autoUpdater.on('update-available', (info) => {
-  console.log('Update available:', info);
+  console.log('[autoUpdater] Update available:', info);
 });
 
 autoUpdater.on('update-not-available', (info) => {
-  console.log('Update not available:', info);
+  console.log('[autoUpdater] Update not available:', info);
 });
 
 autoUpdater.on('error', (err) => {
-  console.log('Error in auto-updater:', err);
+  console.log('[autoUpdater] Error:', err);
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
@@ -68,11 +73,17 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  console.log('=== APP READY EVENT ===');
   createWindow();
 
   // Check for updates when app is ready
-  console.log('App is ready, checking for updates...');
-  autoUpdater.checkForUpdatesAndNotify();
+  console.log('About to call autoUpdater.checkForUpdatesAndNotify()...');
+  try {
+    autoUpdater.checkForUpdatesAndNotify();
+    console.log('autoUpdater.checkForUpdatesAndNotify() called successfully');
+  } catch (err) {
+    console.log('Error calling autoUpdater:', err);
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
