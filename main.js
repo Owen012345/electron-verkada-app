@@ -66,10 +66,8 @@ app.whenReady().then(() => {
   createWindow();
 
   // Check for updates when app is ready
-  // Note: Update check will fail until feed URL is configured
-  if (process.env.NODE_ENV !== 'development') {
-    autoUpdater.checkForUpdatesAndNotify();
-  }
+  console.log('App is ready, checking for updates...');
+  autoUpdater.checkForUpdatesAndNotify();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
