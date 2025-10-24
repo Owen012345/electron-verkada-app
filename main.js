@@ -89,10 +89,10 @@ app.whenReady().then(() => {
   createWindow();
 
   // Check for updates when app is ready
-  logToRenderer('About to call autoUpdater.checkForUpdatesAndNotify()...');
+  logToRenderer('Calling autoUpdater.checkForUpdates()...');
   try {
-    autoUpdater.checkForUpdatesAndNotify();
-    logToRenderer('autoUpdater.checkForUpdatesAndNotify() called successfully');
+    autoUpdater.checkForUpdates();
+    logToRenderer('autoUpdater.checkForUpdates() called successfully');
   } catch (err) {
     logToRenderer('Error calling autoUpdater: ' + err.message);
   }
