@@ -1,6 +1,6 @@
 {
   "name": "varcada-electron-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple Electron Hello World",
   "main": "main.js",
   "scripts": {
