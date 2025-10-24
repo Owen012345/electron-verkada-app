@@ -7,7 +7,7 @@ let mainWindow;
 function logToRenderer(message) {
   console.log(message);
   if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.executeJavaScript(`console.log('${message.replace(/'/g, "\\'")}');`);
+    mainWindow.webContents.send('log-message', message);
   }
 }
 

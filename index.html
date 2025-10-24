@@ -31,8 +31,15 @@
   <p id="version">Loading...</p>
   <script>
     const { ipcRenderer } = require('electron');
+
+    // Receive version
     ipcRenderer.on('app-version', (event, version) => {
       document.getElementById('version').textContent = version;
+    });
+
+    // Receive and display log messages from main process
+    ipcRenderer.on('log-message', (event, message) => {
+      console.log('[Main Process]', message);
     });
   </script>
 </body>
