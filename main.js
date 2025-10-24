@@ -1,38 +1,48 @@
 const { app, BrowserWindow, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 
-console.log('=== MAIN.JS LOADED ===');
-console.log('autoUpdater imported:', !!autoUpdater);
+let mainWindow;
+
+// Helper to send logs to renderer
+function logToRenderer(message) {
+  console.log(message);
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.executeJavaScript(`console.log('${message.replace(/'/g, "\\'")}');`);
+  }
+}
+
+logToRenderer('=== MAIN.JS LOADED ===');
+logToRenderer('autoUpdater imported: ' + !!autoUpdater);
 
 // Auto-updater configuration
 // Using GitHub Releases as update server
 // electron-updater automatically reads from package.json repository field
 
-console.log('Setting up autoUpdater event listeners...');
+logToRenderer('Setting up autoUpdater event listeners...');
 
 // Auto-update event handlers
 autoUpdater.on('checking-for-update', () => {
-  console.log('[autoUpdater] Checking for updates...');
+  logToRenderer('[autoUpdater] Checking for updates...');
 });
 
 autoUpdater.on('update-available', (info) => {
-  console.log('[autoUpdater] Update available:', info);
+  logToRenderer('[autoUpdater] Update available: ' + info.version);
 });
 
 autoUpdater.on('update-not-available', (info) => {
-  console.log('[autoUpdater] Update not available:', info);
+  logToRenderer('[autoUpdater] Update not available: ' + info.version);
 });
 
 autoUpdater.on('error', (err) => {
-  console.log('[autoUpdater] Error:', err);
+  logToRenderer('[autoUpdater] Error: ' + err.message);
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
-  console.log(`Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}%`);
+  logToRenderer('[autoUpdater] Downloaded: ' + Math.round(progressObj.percent) + '%');
 });
 
 autoUpdater.on('update-downloaded', (info) => {
-  console.log('Update downloaded:', info);
+  logToRenderer('[autoUpdater] Update downloaded: ' + info.version);
 
   // Ask user if they want to install update
   const dialogOpts = {
@@ -55,7 +65,7 @@ autoUpdater.on('update-downloaded', (info) => {
 });
 
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -64,25 +74,27 @@ function createWindow() {
     }
   });
 
-  win.loadFile('index.html');
+  mainWindow.loadFile('index.html');
 
   // Send version to renderer process after page loads
-  win.webContents.on('did-finish-load', () => {
-    win.webContents.send('app-version', app.getVersion());
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('app-version', app.getVersion());
   });
+
+  return mainWindow;
 }
 
 app.whenReady().then(() => {
-  console.log('=== APP READY EVENT ===');
+  logToRenderer('=== APP READY EVENT ===');
   createWindow();
 
   // Check for updates when app is ready
-  console.log('About to call autoUpdater.checkForUpdatesAndNotify()...');
+  logToRenderer('About to call autoUpdater.checkForUpdatesAndNotify()...');
   try {
     autoUpdater.checkForUpdatesAndNotify();
-    console.log('autoUpdater.checkForUpdatesAndNotify() called successfully');
+    logToRenderer('autoUpdater.checkForUpdatesAndNotify() called successfully');
   } catch (err) {
-    console.log('Error calling autoUpdater:', err);
+    logToRenderer('Error calling autoUpdater: ' + err.message);
   }
 
   app.on('activate', () => {
