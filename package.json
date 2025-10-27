@@ -51,9 +51,8 @@
       "runAfterFinish": true
     },
     "publish": {
-      "provider": "github",
-      "owner": "Owen012345",
-      "repo": "electron-verkada-app"
+      "provider": "generic",
+      "url": "https://your-nexus-server.com/repository/electron-releases/"
     }
   }
 }

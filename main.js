@@ -15,8 +15,35 @@ logToRenderer('=== MAIN.JS LOADED ===');
 logToRenderer('autoUpdater imported: ' + !!autoUpdater);
 
 // Auto-updater configuration
-// Using GitHub Releases as update server
-// electron-updater automatically reads from package.json repository field
+// Using Nexus as update server
+// Configure update server URL and authentication
+const updateServerUrl = process.env.UPDATE_SERVER_URL || 'https://your-nexus-server.com/repository/electron-releases/';
+const updateAuth = process.env.UPDATE_AUTH; // Format: "username:password" or Bearer token
+
+const feedConfig = {
+  provider: 'generic',
+  url: updateServerUrl
+};
+
+// Add authentication headers if credentials provided
+if (updateAuth) {
+  if (updateAuth.includes(':')) {
+    // Basic Auth: username:password
+    feedConfig.requestHeaders = {
+      'Authorization': 'Basic ' + Buffer.from(updateAuth).toString('base64')
+    };
+    logToRenderer('Using Basic Auth for updates');
+  } else {
+    // Bearer Token
+    feedConfig.requestHeaders = {
+      'Authorization': 'Bearer ' + updateAuth
+    };
+    logToRenderer('Using Bearer Token for updates');
+  }
+}
+
+autoUpdater.setFeedURL(feedConfig);
+logToRenderer('Update server: ' + updateServerUrl);
 
 logToRenderer('Setting up autoUpdater event listeners...');
 
